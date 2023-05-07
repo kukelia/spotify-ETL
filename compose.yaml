@@ -1,0 +1,33 @@
+services:
+  db:
+    build: db
+    networks:
+      - spotify-etl-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready --dbname $$POSTGRES_DB --username $$POSTGRES_USER"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  jupyter:
+    build: ./jupyter
+    ports:
+      - "8888:8888"
+    volumes:
+      - "./notebooks:/notebooks"
+    networks:
+      - spotify-etl-network
+
+  python_etl:
+    build: ./python_etl/
+    networks:
+      - spotify-etl-network
+    depends_on:
+      db:
+        condition: service_healthy
+
+  # airflow:
+
+networks:
+  spotify-etl-network:
+    driver: bridge

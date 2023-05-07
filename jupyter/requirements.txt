@@ -1,0 +1,5 @@
+pandas
+plotly
+psycopg2-binary
+spotipy
+sqlalchemy
