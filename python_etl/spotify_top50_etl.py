@@ -16,11 +16,11 @@ def transform(raw_data) -> pd.DataFrame:
     for song in raw_data['tracks']['items']:
         myList.append(
             {
-                'name' : song['track']['name'],
+                'song_name' : song['track']['name'],
                 'artist' : song['track']['artists'][0]['name'], #only care for main artist
                 # 'position' : song['track']['name'],
                 'rank' : pos,
-                'date' : datetime.now().date()
+                'extract_date' : datetime.now().date()
             }
         )
         pos +=1
@@ -38,21 +38,24 @@ def transform(raw_data) -> pd.DataFrame:
     if df.isnull().values.any() == 1:
         raise Exception("error: null values")
         
-    df['date'] = pd.to_datetime(df['date'])
+    df['extract_date'] = pd.to_datetime(df['extract_date'])
     return df
 
 
 def load(df: pd.DataFrame):
     from engine import engine
-    df.to_sql('top_50_arg_songs', index=False, if_exists='append')
+    df.to_sql('top_50_arg_songs',con=engine, index=False, if_exists='append')
 
+print("check")
+if __name__ == "__main__":
 
-if __name__ == "__name__":
-    
     raw_data = extract(TOP_50_PLAYLIST_ID)
+    print("data extracted")
 
     df = transform(raw_data)
+    print("data transformed")
 
     load(df)
+    print("data loaded")
 
     print('ETL successful')
