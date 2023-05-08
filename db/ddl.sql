@@ -1,4 +1,3 @@
-
 CREATE table if not exists top_50_arg_songs(
     song_name text,
     artist text,
