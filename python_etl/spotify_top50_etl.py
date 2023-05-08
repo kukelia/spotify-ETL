@@ -1,6 +1,8 @@
 import spotipy
 import pandas as pd
 from datetime import datetime
+from sqlalchemy import text
+from engine import engine
 
 TOP_50_PLAYLIST_ID = '37i9dQZEVXbMMy2roB9myp'
 
@@ -11,6 +13,7 @@ def extract(id: str):
 
 
 def transform(raw_data) -> pd.DataFrame:
+    global today
     myList = []
     pos = 1 #CHECK THIS
     for song in raw_data['tracks']['items']:
@@ -20,7 +23,7 @@ def transform(raw_data) -> pd.DataFrame:
                 'artist' : song['track']['artists'][0]['name'], #only care for main artist
                 # 'position' : song['track']['name'],
                 'rank' : pos,
-                'extract_date' : datetime.now().date()
+                'extract_date' : today
             }
         )
         pos +=1
@@ -43,11 +46,18 @@ def transform(raw_data) -> pd.DataFrame:
 
 
 def load(df: pd.DataFrame):
-    from engine import engine
     df.to_sql('top_50_arg_songs',con=engine, index=False, if_exists='append')
 
 print("check")
 if __name__ == "__main__":
+
+    today = datetime.now().date()
+    conn = engine.connect()
+    query = text(f"SELECT * FROM top_50_arg_songs WHERE extract_date = '{today}' LIMIT 1;")
+
+    #check if script has already ran today (avoid duplicates)
+    if conn.execute(query).fetchone() != None:
+        raise Exception("there are already records extracted today")
 
     raw_data = extract(TOP_50_PLAYLIST_ID)
     print("data extracted")
