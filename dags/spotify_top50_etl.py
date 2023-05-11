@@ -9,7 +9,7 @@ def extract(id: str, spotipy_object):
 
 
 def transform(raw_data) -> pd.DataFrame:
-    global today
+    today = datetime.now().date()
     myList = []
     pos = 1 #CHECK THIS
     for song in raw_data['tracks']['items']:

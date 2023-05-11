@@ -29,12 +29,21 @@ with DAG(dag_id="spotify_etl", default_args=default_args, schedule="0 13 * * *")
         return "top_50 task finished"
     top_50_etl = top_50_etl() #Mandatory
 
+    @task(task_id='personal_played_songs_etl')
+    def personal_played_songs_etl():
+        print('empieza task personal_played_songs_etl')
+        from spotify_personal_played import run_personal_played_etl
+        run_personal_played_etl()
+        return "personal_played task finished"
+    personal_played_songs_etl = personal_played_songs_etl() #Mandatory
+
+
     start = EmptyOperator(task_id='Start')
     finish = EmptyOperator(task_id='Finish')
 
 
 
-    start >> top_50_etl >> finish
+    start >> [top_50_etl, personal_played_songs_etl] >> finish
 
 
     

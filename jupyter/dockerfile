@@ -2,3 +2,4 @@ from jupyter/scipy-notebook
 COPY requirements.txt .
 RUN pip install -r requirements.txt
 WORKDIR /notebooks
+ENV JUPYTER_TOKEN=token
