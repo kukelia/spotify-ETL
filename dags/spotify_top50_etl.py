@@ -67,4 +67,4 @@ def run_top50_etl():
     load(df)
     print("data loaded")
 
-    print('ETL successful')
+    print('top 50 ETL successful')

@@ -1,5 +1,6 @@
 import pandas as pd
 import datetime
+from engine import engine
 
 def extract() -> dict:
     from custom_spotipy import sp
@@ -18,10 +19,10 @@ def transform(raw_data) -> pd.DataFrame:
     for song in raw_data['items']:
         myList.append(
             {
-                'name' : song['track']['name'],
+                'song_name' : song['track']['name'],
                 'artist' : song['track']['artists'][0]['name'], #only care for main artist
                 'album' : song['track']['album']['name'],
-                'duration' : song['track']['duration_ms'],
+                'duration_ms' : song['track']['duration_ms'],
                 'played_at' : song['played_at']
             }
         )
@@ -29,7 +30,7 @@ def transform(raw_data) -> pd.DataFrame:
 
     if df.empty:
         print("dataframe is empty, no listened songs yesterday?")
-        return
+        return df
     
     #removing time zone, making column a pd datetime type
     df['played_at'] = pd.to_datetime(df['played_at']).apply(lambda x: x.strftime('%Y/%m/%d %H:%M:%S')).apply(pd.to_datetime)
@@ -42,16 +43,24 @@ def transform(raw_data) -> pd.DataFrame:
         if record.date() != (datetime.datetime.today().date() - datetime.timedelta(days=1)):
             #LOG DF TO CSV 
             raise Exception("an extracted record does not belong to yesterday")
+        
+    df['duration_ms'] = (df['duration_ms'] /1000).astype(int)
+    df = df.rename(columns={'duration_ms':'duration_sec'})
 
     return df
 
 
 def load(df):
-    from engine import engine
     df.to_sql('my_song_history',con=engine, index=False, if_exists='append')
     
 
 def run_personal_played_etl():
+    from sqlalchemy import text
+    conn = engine.connect()
+    query = text("""SELECT * FROM my_song_history WHERE played_at BETWEEN '2023/5/11 00:00:00.00' AND '2023/5/11 23:59:59.999' LIMIT 1;""")
+    if conn.execute(query).fetchone() != None:
+        raise Exception("already extracted yesterday played songs")
+
     raw_data = extract()
     df = transform(raw_data)
     load(df)

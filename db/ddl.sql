@@ -7,9 +7,9 @@ CREATE table if not exists top_50_arg_songs(
 );
 
 CREATE table if not exists my_song_history(
-    song_name varchar(35),
-    album varchar(35),
-    artist varchar(30),
+    song_name text,
+    album text,
+    artist text,
     duration_sec int,
     played_at TIMESTAMP WITHOUT TIME ZONE,
     PRIMARY KEY(played_at)
