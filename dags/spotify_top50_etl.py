@@ -47,8 +47,6 @@ def load(df: pd.DataFrame):
 
 def run_top50_etl():
     print("empieza proceso ETL")
-    top_50_playlist_id = '37i9dQZEVXbMMy2roB9myp'
-    spotipy_object = spotipy.Spotify(client_credentials_manager=spotipy.oauth2.SpotifyClientCredentials(client_id="2d33cb98e7304ac2958a0d6e5a765a56", client_secret='da989bfc36ff49139522ef5a58867cb5'))
 
     today = datetime.now().date()
     conn = engine.connect()
@@ -57,8 +55,11 @@ def run_top50_etl():
     #check if script has already ran today (avoid duplicates)
     if conn.execute(query).fetchone() != None:
         raise Exception("there are already records extracted today")
-
-    raw_data = extract(top_50_playlist_id, spotipy_object)
+    
+    from custom_spotipy import sp
+    top_50_playlist_id = '37i9dQZEVXbMMy2roB9myp'
+    
+    raw_data = extract(top_50_playlist_id, sp)
     print("data extracted")
 
     df = transform(raw_data)
