@@ -13,3 +13,5 @@ This Data Engineering project consists of using the Spotify API to access both d
 - Validating and transforming the data
 - Managing differences in timezones (local vs spotify's default)
 - Deploying in the cloud
+
+### (Project in progress)
