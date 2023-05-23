@@ -6,7 +6,7 @@ def extract() -> dict:
     from custom_spotipy import sp
     
     today = datetime.datetime.today().date()
-    today_start = datetime.datetime.combine(today, datetime.time.min)
+    today_start = datetime.datetime.combine(today, datetime.time.min) + datetime.timedelta(hours=3) #to ART
     yesterday_start = today_start - datetime.timedelta(days=1)
     unix_yesterday_start = int( yesterday_start.timestamp() *1000 )
 
@@ -32,16 +32,17 @@ def transform(raw_data) -> pd.DataFrame:
         print("dataframe is empty, no listened songs yesterday?")
         return df
     
-    #removing time zone, making column a pd datetime type
-    df['played_at'] = pd.to_datetime(df['played_at']).apply(lambda x: x.strftime('%Y/%m/%d %H:%M:%S')).apply(pd.to_datetime)
-
+    #removing time zone after adjusting to ART, making column a pd datetime type
+    df['played_at'] = pd.to_datetime(pd.to_datetime(df['played_at']).apply(lambda x: x -datetime.timedelta(hours=3)).dt.strftime('%Y/%m/%d %H:%M:%S'))
     if df.isnull().values.any() == 1:
         raise Exception("error: null values")
     
     #check the songs extracted were listened yesterday
     for record in df['played_at']:
+        print(record.date())
         if record.date() != (datetime.datetime.today().date() - datetime.timedelta(days=1)):
             #LOG DF TO CSV 
+            print(f'record is {record} with date {record.date()}')
             raise Exception("an extracted record does not belong to yesterday")
         
     df['duration_ms'] = (df['duration_ms'] /1000).astype(int)
