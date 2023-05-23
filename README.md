@@ -14,4 +14,6 @@ This Data Engineering project consists of using the Spotify API to access both d
 - Managing differences in timezones (local vs spotify's default)
 - Deploying in the cloud
 
-### (Project in progress)
+###  📌AWS Diagram:
+<img src="https://github.com/kukelia/spotify-ETL/blob/master/img/spoty-etl.png" alt= “” width="900" height="550">
+### (READ ME in progress)
