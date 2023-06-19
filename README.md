@@ -18,4 +18,4 @@ This Data Engineering project consists of using the Spotify API to access both d
 <img src="https://github.com/kukelia/spotify-ETL/blob/master/img/spoty-etl.png" alt= “” width="900" height="550">
 
 ### Data Analysis:
-<a href="https://github.com/tomaszbk/spotify-ETL/blob/master/notebooks/data_analysis/analysis.ipynb">Link to notebook inside this repo</a>
+<a href="https://github.com/tomaszbk/spotify-ETL/blob/master/notebooks/data_analysis/data_analysis.pdf">Link to notebook inside this repo</a>
