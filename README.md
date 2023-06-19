@@ -8,7 +8,7 @@ This Data Engineering project consists of using the Spotify API to access both d
 - PostgreSQL
 - AWS
 
-### 🏆Main challenges overcomed:
+### 🏆Main challenges overcomed include:
 - Dockerizing the services of the application with docker compose
 - Validating and transforming the data
 - Managing differences in timezones (local vs spotify's default)
