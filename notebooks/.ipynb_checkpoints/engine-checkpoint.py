@@ -1,4 +1,3 @@
-from sqlalchemy import create_engine ,text
-from sqlalchemy.pool import StaticPool
+from sqlalchemy import create_engine
 
-engine = create_engine('postgresql://username:password@db:5432/database', poolclass =StaticPool,isolation_level="AUTOCOMMIT")
+engine = create_engine('postgresql://username:password@db:5432/database')
